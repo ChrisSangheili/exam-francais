@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mon Français</title>
+<style>
+:root{
+--bg:#0b1020;--panel:#171f35;--line:#2f3b5c;--text:#f6f8ff;--muted:#aeb8d0;
+--a:#8ca8ff;--b:#b89cff;
+}
+*{box-sizing:border-box}
+body{
+margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif;
+background:linear-gradient(160deg,#09101d,#0f1730);
+color:var(--text);
+}
+.wrap{max-width:1100px;margin:auto;padding:24px}
+.hero{
+background:rgba(255,255,255,.04);
+border:1px solid var(--line);
+border-radius:28px;
+padding:34px;
+margin-bottom:28px;
+}
+h1{font-size:clamp(2.5rem,6vw,5rem);margin:0}
+p{color:var(--muted);line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+.card{
+background:rgba(255,255,255,.04);
+border:1px solid var(--line);
+border-radius:22px;
+padding:22px;
+display:flex;
+flex-direction:column;
+}
+.card h2{margin:.2em 0}
+.tag{
+display:inline-block;
+padding:6px 10px;
+border-radius:999px;
+background:#24314d;
+color:#cdd8ff;
+font-size:.8rem;
+margin-bottom:12px;
+}
+.btns{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap}
+a.button{
+text-decoration:none;
+padding:13px 18px;
+border-radius:14px;
+font-weight:700;
+}
+.primary{
+background:linear-gradient(90deg,var(--a),var(--b));
+color:#111827;
+}
+.secondary{
+background:#27324e;
+color:white;
+}
+.lessons{
+margin-top:28px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:12px;
+}
+.lesson{
+background:rgba(255,255,255,.04);
+border:1px solid var(--line);
+border-radius:18px;
+padding:18px;
+}
+.lesson strong{display:block;margin-bottom:8px}
+.coming{
+margin-top:40px;
+padding:18px;
+border-radius:18px;
+border:1px dashed var(--line);
+color:var(--muted);
+}
+footer{
+margin-top:40px;
+text-align:center;
+color:var(--muted);
+font-size:.9rem;
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<section class="hero">
+<h1>Mon Français 🇫🇷</h1>
+<p>
+Tu plataforma personal para practicar francés con los ejercicios de Assimil,
+exámenes acumulativos y estadísticas de progreso.
+</p>
+</section>
+
+<div class="grid">
+
+<div class="card">
+<span class="tag">Lecciones 1–7</span>
+<h2>📘 Examen original del libro</h2>
+
+<p>
+Contiene todos los ejercicios originales organizados exactamente como aparecen
+en el libro.
+</p>
+
+<div class="btns">
+<a class="button primary" href="examen-original.html">
+Abrir examen
+</a>
+</div>
+
+</div>
+
+<div class="card">
+<span class="tag">Repaso</span>
+
+<h2>🧠 Examen acumulativo</h2>
+
+<p>
+Examen creado especialmente para repasar todas las lecciones mezclando ejercicios
+nuevos y preguntas del libro.
+</p>
+
+<div class="btns">
+<a class="button primary" href="examen-acumulativo.html">
+Abrir examen
+</a>
+</div>
+
+</div>
+
+</div>
+
+<h2 style="margin-top:40px">📚 Práctica por lección</h2>
+
+<div class="lessons">
+
+<div class="lesson"><strong>Lección 1</strong><a class="button secondary" href="#">Próximamente</a></div>
+<div class="lesson"><strong>Lección 2</strong><a class="button secondary" href="#">Próximamente</a></div>
+<div class="lesson"><strong>Lección 3</strong><a class="button secondary" href="#">Próximamente</a></div>
+<div class="lesson"><strong>Lección 4</strong><a class="button secondary" href="#">Próximamente</a></div>
+<div class="lesson"><strong>Lección 5</strong><a class="button secondary" href="#">Próximamente</a></div>
+<div class="lesson"><strong>Lección 6</strong><a class="button secondary" href="#">Próximamente</a></div>
+<div class="lesson"><strong>Lección 7</strong><a class="button secondary" href="#">Próximamente</a></div>
+
+</div>
+
+<div class="coming">
+<b>Próximamente</b><br><br>
+
+• Estadísticas de progreso<br>
+• Corrección automática completa<br>
+• Más exámenes<br>
+• Lecciones 8+<br>
+• Modo práctica
+</div>
+
+<footer>
+Mon Français · Plataforma personal de estudio
+</footer>
+
+</div>
+
+</body>
+</html>
