@@ -1,0 +1,564 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<title>Examen original · Mon Français</title>
+<style>
+:root{
+  --bg:#0b1020;--panel:#151d31;--panel2:#1c2740;--line:#2d3958;
+  --text:#f7f9ff;--muted:#aab5cc;--blue:#8ca8ff;--purple:#b89cff;
+  --good:#67d7ab;--bad:#ff8d9c;--warn:#ffd778;--shadow:0 18px 50px rgba(0,0,0,.25)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;min-height:100vh;color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(140,168,255,.16),transparent 32%),
+    radial-gradient(circle at 100% 8%,rgba(184,156,255,.13),transparent 34%),
+    linear-gradient(160deg,#09101d,#0e1527 48%,#10182c);
+}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(1050px,calc(100% - 24px));margin:auto;padding:18px 0 130px}
+.top{
+  display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:16px
+}
+.back{
+  border:1px solid var(--line);background:rgba(255,255,255,.035);padding:11px 14px;border-radius:13px;color:var(--muted)
+}
+.save-state{color:var(--muted);font-size:.9rem}
+.hero{
+  border:1px solid var(--line);
+  background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(255,255,255,.025));
+  border-radius:28px;padding:28px;box-shadow:var(--shadow)
+}
+h1{margin:0 0 8px;font-size:clamp(2.2rem,7vw,4.7rem);line-height:.95;letter-spacing:-.055em}
+.hero p{margin:0;color:var(--muted);line-height:1.5}
+.meta{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}
+.pill{border:1px solid var(--line);background:rgba(255,255,255,.035);padding:8px 11px;border-radius:999px;color:var(--muted);font-size:.88rem}
+.sticky{
+  position:sticky;top:0;z-index:20;background:rgba(11,16,32,.9);backdrop-filter:blur(15px);
+  padding:11px 0 9px
+}
+.progress{height:8px;border-radius:999px;background:#232d47;overflow:hidden}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--purple));transition:width .3s}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{
+  white-space:nowrap;border:1px solid var(--line);background:#151d31;color:var(--muted);
+  padding:9px 12px;border-radius:999px;font-weight:700
+}
+.tabs button.active{background:linear-gradient(90deg,var(--blue),var(--purple));color:#11162a;border-color:transparent}
+.lesson{
+  margin-top:20px;border:1px solid var(--line);background:rgba(21,29,49,.88);
+  border-radius:24px;padding:22px;box-shadow:0 12px 35px rgba(0,0,0,.14)
+}
+.lesson.hidden{display:none}
+.lesson-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:8px}
+.lesson h2{margin:0;font-size:1.55rem;letter-spacing:-.03em}
+.lesson-score{color:var(--warn);font-weight:800;white-space:nowrap}
+.exercise{margin-top:21px}
+.exercise h3{font-size:1.08rem;margin:0 0 10px}
+.exercise-note{color:var(--muted);font-size:.9rem;margin:-3px 0 10px}
+.q{border-top:1px solid rgba(255,255,255,.075);padding:15px 0}
+.q:first-of-type{border-top:0}
+.q label{display:block;line-height:1.5;margin-bottom:9px}
+input,textarea{
+  width:100%;border:1px solid var(--line);background:#10172a;color:var(--text);
+  border-radius:13px;padding:12px 13px;font:inherit;outline:none
+}
+textarea{min-height:105px;resize:vertical}
+input:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(140,168,255,.13)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.feedback{display:none;margin-top:8px;font-size:.92rem;line-height:1.4}
+.correct input,.correct textarea{border-color:var(--good)}
+.incorrect input,.incorrect textarea{border-color:var(--bad)}
+.correct .feedback{display:block;color:var(--good)}
+.incorrect .feedback{display:block;color:var(--bad)}
+.model{
+  display:none;margin-top:10px;padding:12px 13px;border:1px solid rgba(140,168,255,.3);
+  background:rgba(140,168,255,.08);border-radius:13px;color:#e3e8ff;line-height:1.5
+}
+.show-model .model{display:block}
+.results{
+  display:none;margin-top:22px;border:1px solid var(--line);border-radius:24px;padding:23px;
+  background:linear-gradient(145deg,rgba(103,215,171,.09),rgba(140,168,255,.08))
+}
+.results.show{display:block}
+.total{font-size:clamp(2.5rem,8vw,5rem);font-weight:850;letter-spacing:-.06em;line-height:1}
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:17px}
+.metric{border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:16px;padding:15px}
+.metric span{color:var(--muted);font-size:.85rem}.metric strong{display:block;font-size:1.3rem;margin-top:5px}
+.lesson-breakdown{margin-top:18px;display:grid;gap:10px}
+.break-row{display:grid;grid-template-columns:1fr auto;gap:12px;padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.035)}
+.actions{
+  position:fixed;left:0;right:0;bottom:0;z-index:30;padding:13px max(13px,env(safe-area-inset-right)) calc(13px + env(safe-area-inset-bottom)) max(13px,env(safe-area-inset-left));
+  background:rgba(8,12,23,.92);backdrop-filter:blur(17px);border-top:1px solid var(--line)
+}
+.actions-inner{width:min(1050px,100%);margin:auto;display:flex;gap:10px}
+button{font:inherit;cursor:pointer}
+.primary,.secondary{border:0;border-radius:14px;padding:14px 18px;font-weight:780}
+.primary{flex:1;background:linear-gradient(90deg,var(--blue),var(--purple));color:#101528}
+.secondary{background:#27324e;color:var(--text)}
+.manual-note{color:var(--muted);font-size:.9rem;line-height:1.5}
+@media(max-width:700px){
+  .wrap{width:min(100% - 16px,1050px);padding-top:10px}
+  .hero,.lesson,.results{border-radius:20px;padding:18px}
+  .row,.result-grid{grid-template-columns:1fr}
+  .lesson-head{display:block}.lesson-score{display:block;margin-top:8px}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="top">
+    <a class="back" href="index.html">← Inicio</a>
+    <span class="save-state" id="saveState">Respuestas guardadas</span>
+  </div>
+
+  <section class="hero">
+    <h1>Examen original</h1>
+    <p>Français A2 · Lecciones 1–7. Resuelve los ejercicios del libro y califica automáticamente las respuestas cerradas.</p>
+    <div class="meta">
+      <span class="pill">📘 7 lecciones</span>
+      <span class="pill">✅ Corrección automática</span>
+      <span class="pill">✍️ Traducciones con modelos</span>
+      <span class="pill">💾 Guardado automático</span>
+    </div>
+  </section>
+
+  <div class="sticky">
+    <div class="progress"><div id="bar"></div></div>
+    <div class="tabs" id="tabs"></div>
+  </div>
+
+  <form id="exam"></form>
+
+  <section id="results" class="results">
+    <div class="total" id="totalScore">0%</div>
+    <p id="resultMessage"></p>
+    <div class="result-grid">
+      <div class="metric"><span>Puntos automáticos</span><strong id="pointsMetric">0 / 0</strong></div>
+      <div class="metric"><span>Reactivos correctos</span><strong id="correctMetric">0 / 0</strong></div>
+      <div class="metric"><span>Lección más fuerte</span><strong id="bestLesson">—</strong></div>
+    </div>
+    <div class="lesson-breakdown" id="breakdown"></div>
+    <p class="manual-note">Las traducciones muestran una solución modelo, pero no se incluyen en la puntuación automática porque puede haber varias formulaciones correctas.</p>
+  </section>
+</main>
+
+<div class="actions">
+  <div class="actions-inner">
+    <button type="button" class="primary" id="grade">Calificar examen</button>
+    <button type="button" class="secondary" id="reset">Reiniciar</button>
+  </div>
+</div>
+
+<script>
+const lessons = [
+{
+ title:"Lección 1 · Présentation",
+ exercises:[
+  {title:"Ejercicio 1. Conjuga avoir y être.", type:"auto", items:[
+   ["a) Je (être) ___ français et ma femme (être) ___ belge.",["suis|est"],2],
+   ["b) Virginie (avoir) ___ un petit accent.",["a"],1],
+   ["c) Ils (être) ___ en retard pour la conférence.",["sont"],1],
+   ["d) Vous (être) ___ très sympa.",["êtes"],1],
+   ["e) Elles (avoir) ___ un frère et il (avoir) ___ deux sœurs.",["ont|a"],2]
+  ]},
+  {title:"Ejercicio 2. Pon estas frases en forma negativa.", type:"auto", items:[
+   ["a) Alain est français.",["alain n'est pas français","n'est pas"],1],
+   ["b) Ils sont en retard.",["ils ne sont pas en retard","ne sont pas"],1],
+   ["c) Virginie a deux sœurs.",["virginie n'a pas deux sœurs","n'a pas"],1],
+   ["d) Lyon est une belle ville.",["lyon n'est pas une belle ville","n'est pas"],1],
+   ["e) Nous sommes à la Sorbonne.",["nous ne sommes pas à la sorbonne","ne sommes pas"],1],
+   ["f) Je suis belge.",["je ne suis pas belge","ne suis pas"],1]
+  ]},
+  {title:"Ejercicio 3. Género y artículos.", type:"auto", items:[
+   ["a) émission",["la|une"],1],["b) ville",["la|une"],1],["c) manteau",["le|un"],1],
+   ["d) boulangerie",["la|une"],1],["e) café",["le|un"],1],["f) conférence",["la|une"],1],
+   ["g) robe",["la|une"],1],["h) manteau",["le|un"],1],["i) vin",["le|un"],1],
+   ["j) père",["le|un"],1],["k) nation",["la|une"],1]
+  ]},
+  {title:"Ejercicio 4. Traduce al francés.", type:"manual", items:[
+   ["a) Hola, Jean. ¿Cómo estás? — Muy bien, gracias.","Bonjour, Jean, comment ça va ? — Très bien, merci."],
+   ["b) ¿Es usted belga? — No. Soy suiza.","Vous êtes belge ? — Pas du tout. Je suis suisse."],
+   ["c) Lyon es una ciudad bonita.","Lyon est une belle ville."],
+   ["d) Ella llega tarde. — Yo también.","Elle est en retard. — Moi aussi."],
+   ["e) Adiós. ¡Espéreme!","Au revoir ! Attendez-moi !"]
+  ]}
+ ]},
+{
+ title:"Lección 2 · Faire connaissance",
+ exercises:[
+  {title:"Ejercicio 1. Conjuga faire.",type:"auto",items:[
+   ["a) Nous (faire) ___ l’enseignement en français.",["faisons"],1],
+   ["b) Je (faire) ___ une conférence à Marseille.",["fais"],1],
+   ["c) Qu’est-ce qu’elle (faire) ___ comme travail ?",["fait"],1],
+   ["d) Qu’est-ce que vous (faire) ___ dans votre classe ?",["faites"],1]
+  ]},
+  {title:"Ejercicio 2. Masculino y femenino.",type:"auto",items:[
+   ["a) un serveur →",["une serveuse","serveuse"],1],
+   ["b) une journaliste →",["un journaliste","journaliste"],1],
+   ["c) un avocat →",["une avocate","avocate"],1],
+   ["d) un directeur →",["une directrice","directrice"],1],
+   ["e) une informaticienne →",["un informaticien","informaticien"],1]
+  ]},
+  {title:"Ejercicio 3. Forma correcta del adjetivo.",type:"auto",items:[
+   ["a) Les familles sont (gentil).",["gentilles"],1],
+   ["b) L’école est très (petit).",["petite"],1],
+   ["c) Mes collègues sont (malade).",["malades"],1],
+   ["d) L’informaticien est (spécialisé) dans les réseaux.",["spécialisé"],1],
+   ["e) Sophie travaille dans une (petit) agence.",["petite"],1]
+  ]},
+  {title:"Ejercicio 4. Traduce al francés.",type:"manual",items:[
+   ["a) Él enseña matemáticas en una escuela primaria.","Il enseigne les mathématiques dans une école primaire."],
+   ["b) ¿Estás casada, Sophie? — Sí, y tengo un hijo.","Est-ce que tu es mariée, Sophie ? — Oui, et j'ai un fils."],
+   ["c) ¿A qué se dedica usted?","Qu'est-ce que vous faites comme travail ?"],
+   ["d) ¿Cuántos alumnos tiene en su clase en este momento?","Vous avez combien d'élèves dans votre classe en ce moment ?"],
+   ["e) Es director de una pequeña agencia de viajes en Lyon.","Il est directeur d'une petite agence de voyages à Lyon."]
+  ]}
+ ]},
+{
+ title:"Lección 3 · En Bretagne",
+ exercises:[
+  {title:"Ejercicio 1. Conjuga el verbo.",type:"auto",items:[
+   ["a) Nous (pouvoir) ___ aller à Rennes en car.",["pouvons"],1],
+   ["b) Je (aller) ___ chez mon ami Georges ce soir.",["vais"],1],
+   ["c) Jean-Pierre et Amélie (vouloir) ___ venir avec nous.",["veulent"],1],
+   ["d) Elle (pouvoir) ___ nous donner l’adresse.",["peut"],1],
+   ["e) Ils (vouloir) ___ des crêpes et du cidre.",["veulent"],1]
+  ]},
+  {title:"Ejercicio 2. Interrogación con est-ce que e inversión.",type:"pair",items:[
+   ["a) Il est de Nice.",["est-ce qu'il est de nice","est-il de nice"],2],
+   ["b) Elles connaissent bien la région.",["est-ce qu'elles connaissent bien la région","connaissent-elles bien la région"],2],
+   ["c) Vous prenez le bus pour aller au Mont-Saint-Michel.",["est-ce que vous prenez le bus pour aller au mont-saint-michel","prenez-vous le bus pour aller au mont-saint-michel"],2],
+   ["d) Nous sommes en retard.",["est-ce que nous sommes en retard","sommes-nous en retard"],2],
+   ["e) Ils font de la bonne viande dans ce restaurant.",["est-ce qu'ils font de la bonne viande dans ce restaurant","font-ils de la bonne viande dans ce restaurant"],2]
+  ]},
+  {title:"Ejercicio 3. Forma negativa.",type:"auto",items:[
+   ["a) Il est de Nice.",["il n'est pas de nice","n'est pas"],1],
+   ["b) Elles connaissent bien la région.",["elles ne connaissent pas bien la région","ne connaissent pas"],1],
+   ["c) Vous prenez le bus pour aller au Mont-Saint-Michel.",["vous ne prenez pas le bus pour aller au mont-saint-michel","ne prenez pas"],1],
+   ["d) Nous sommes en retard.",["nous ne sommes pas en retard","ne sommes pas en retard"],1],
+   ["e) Ils font de la bonne viande dans ce restaurant.",["ils ne font pas de bonne viande dans ce restaurant","ne font pas de bonne viande"],1]
+  ]},
+  {title:"Ejercicio 4. Completa.",type:"auto",items:[
+   ["a) À ___ chambre d’hôte êtes-vous ? (quel)",["quelle"],1],
+   ["b) ___ est l’adresse de la sœur de Philippe ? (quel)",["quelle"],1],
+   ["c) ___ restaurants sont ouverts le week-end ? (quel)",["quels"],1],
+   ["d) ___ émissions aimez-vous à la télévision ? (quel)",["quelles"],1],
+   ["e) Nous avons ___ café, ___ viande et ___ crêpes.",["du|de la|des"],3]
+  ]},
+  {title:"Ejercicio 5. Traduce al francés.",type:"manual",items:[
+   ["a) ¿Es usted de Niza? / ¿Eres de Niza? — No, soy de París.","Est-ce que vous êtes de Nice ? / Êtes-vous de Nice ? — Non, je suis de Paris."],
+   ["b) El hotel está a dos kilómetros de la escuela.","L'hôtel est à deux kilomètres de l'école."],
+   ["c) Tome este mapa. — Muchas gracias por su ayuda.","Prenez cette carte. — Merci beaucoup de votre aide."],
+   ["d) ¿Puede darme un consejo? — Claro.","Pouvez-vous me donner un conseil ? — Bien sûr."],
+   ["e) No tenemos mucho tiempo. Puede irse en autobús esta tarde.","Nous n'avons pas beaucoup de temps. Vous pouvez partir en bus ce soir."]
+  ]}
+ ]},
+{
+ title:"Lección 4 · Maison et famille",
+ exercises:[
+  {title:"Ejercicio 1. Conjuga en afirmativo.",type:"auto",items:[
+   ["a) Jean et sa femme (habiter) ___ à Strasbourg.",["habitent"],1],
+   ["b) Nous (chercher) ___ la salle de conférence.",["cherchons"],1],
+   ["c) Qu’est-ce que tu (préparer) ___ pour le dîner ?",["prépares"],1],
+   ["d) Vous (cuisiner) ___ vraiment très bien.",["cuisinez"],1],
+   ["e) Je (manger) ___ tout, et ma femme (aimer) ___ les desserts.",["mange|aime"],2]
+  ]},
+  {title:"Ejercicio 2. Forma negativa.",type:"auto",items:[
+   ["a) Je trouve les verres dans le placard.",["je ne trouve pas les verres dans le placard","ne trouve pas"],1],
+   ["b) Le lave-vaisselle est derrière la porte.",["le lave-vaisselle n'est pas derrière la porte","n'est pas"],1],
+   ["c) Ma sœur et son fils habitent en Alsace.",["ma sœur et son fils n'habitent pas en alsace","n'habitent pas"],1],
+   ["d) Nous aidons mon frère au bureau.",["nous n'aidons pas mon frère au bureau","n'aidons pas"],1],
+   ["e) Vous parlez très bien le français.",["vous ne parlez pas très bien le français","ne parlez pas"],1]
+  ]},
+  {title:"Ejercicio 3. Adjetivos posesivos.",type:"auto",items:[
+   ["a) ___ enfants sont en Alsace avec ___ père.",["nos|mon"],2],
+   ["b) Appelez ___ frère.",["son"],1],
+   ["c) Passe-moi ___ assiette.",["ton"],1],
+   ["d) J’adore ___ gâteaux.",["vos"],1],
+   ["e) ___ amis sont à Rennes, où ___ fils est professeur.",["leurs|leur"],2]
+  ]},
+  {title:"Ejercicio 4. Traduce al francés.",type:"manual",items:[
+   ["a) Los cuchillos, los tenedores y las cucharas están siempre en el lavavajillas.","Les couteaux, les fourchettes et les cuillères sont toujours dans le lave-vaisselle."],
+   ["b) Mi hermana trabaja en la Sorbona de París, pero va a Rennes.","Ma sœur travaille à la Sorbonne à Paris, mais elle va à Rennes."],
+   ["c) Tengo hambre y tengo sed. — Yo también.","J'ai faim et j'ai soif. — Moi aussi."],
+   ["d) Vayan a buscar los platos al armario del salón.","Allez chercher les assiettes dans le placard du salon."],
+   ["e) ¿Puedo ayudarle a hacer algo? — No, gracias. Todo está listo.","Est-ce que je peux vous aider à faire quelque chose ? — Non merci. Tout est prêt."]
+  ]}
+ ]},
+{
+ title:"Lección 5 · Où est… ?",
+ exercises:[
+  {title:"Ejercicio 1. Pronombre de objeto directo.",type:"auto",items:[
+   ["a) Pouvez-vous ___ aider ?",["m'","m’"],1],
+   ["b) Nous ne ___ connaissons pas.",["les"],1],
+   ["c) Elle ___ adore !",["l'","l’"],1],
+   ["d) Est-ce que tu ___ achètes, cette carte ?",["l'","l’"],1],
+   ["e) Je ___ attends au musée d’Orsay.",["t'","t’"],1]
+  ]},
+  {title:"Ejercicio 2. Conjuga según se indica.",type:"auto",items:[
+   ["a) Nous (savoir, negativa) ___ si Jean vient.",["ne savons pas"],1],
+   ["b) (Continuer / tourner) ___ tout droit puis ___ à gauche.",["continuez|tournez"],2],
+   ["c) Ils (aller) ___ à pied.",["vont"],1],
+   ["d) Est-ce que tu (savoir) ___ ? — Non, je (savoir, negativa) ___.",["sais|ne sais pas"],2]
+  ]},
+  {title:"Ejercicio 3. Completa.",type:"auto",items:[
+   ["a) Prenez la première rue à ___.",["droite"],1],
+   ["b) Vos amis aiment l’art moderne, ___ ?",["n'est-ce pas","n’est-ce pas"],1],
+   ["c) ___ le monde aime l’art moderne.",["tout"],1],
+   ["d) Combien ___ les billets ? — Ils ___ vingt euros.",["coûtent|coûtent"],2],
+   ["e) Il ___ mieux prendre le métro.",["vaut"],1]
+  ]},
+  {title:"Ejercicio 4. Números.",type:"auto",items:[
+   ["15",["quinze"],1],["22",["vingt-deux"],1],["45",["quarante-cinq"],1],
+   ["33",["trente-trois"],1],["70",["soixante-dix"],1],["61",["soixante et un"],1],
+   ["12",["douze"],1],["21",["vingt et un"],1],["17",["dix-sept"],1]
+  ]},
+  {title:"Ejercicio 5. Traduce al francés.",type:"manual",items:[
+   ["a) Él no la entiende. ¿Puedes ayudarle?","Il ne la comprend pas. Est-ce que tu peux l'aider ?"],
+   ["b) Me gustan estos tomates. ¿Dónde los compras?","J'aime ces tomates. Où est-ce que tu les achètes ?"],
+   ["c) ¿Cuánto cuestan las entradas? — Cuestan veintisiete euros.","Combien coûtent les billets ? — Ils coûtent vingt-sept euros."],
+   ["d) ¿Sabe dónde puedo encontrar un restaurante? (dos maneras)","Est-ce que vous savez où je peux trouver un restaurant ? / Savez-vous où je peux trouver un restaurant ?"],
+   ["e) Es mejor tomar el metro. El museo de Orsay está un poco lejos.","Il vaut mieux prendre le métro. Le musée d'Orsay est un peu loin."]
+  ]}
+ ]},
+{
+ title:"Lección 6 · Quelle heure est-il ?",
+ exercises:[
+  {title:"Ejercicio 1. Conjuga los verbos.",type:"auto",items:[
+   ["a) Elle (maigrir) ___ mais son mari (grossir) ___.",["maigrit|grossit"],2],
+   ["b) Il ne (réussir) ___ pas toujours.",["réussit"],1],
+   ["c) Vous (choisir) ___ toujours une crème caramel.",["choisissez"],1],
+   ["d) Nous (découvrir) ___ ensemble.",["découvrons"],1],
+   ["e) Il va (refroidir) ___.",["refroidir"],1]
+  ]},
+  {title:"Ejercicio 2. Negativa o interrogativa.",type:"auto",items:[
+   ["a) Je (remplir, negativa) ___ mon assiette.",["ne remplis pas"],1],
+   ["b) Vous (finir, interrogativa) ___ votre dessert ?",["est-ce que vous finissez"],1],
+   ["c) Ils (réfléchir, negativa) ___.",["ne réfléchissent pas"],1],
+   ["d) Nous (choisir, negativa) ___ nos amis.",["ne choisissons pas"],1],
+   ["e) Ils (revenir, interrogativa) ___ demain ?",["est-ce qu'ils reviennent","est-ce qu’ils reviennent"],1]
+  ]},
+  {title:"Ejercicio 3. Escribe las horas.",type:"time",items:[
+   ["a) 11 h 45",[["il est midi moins le quart"],["il est onze heures quarante-cinq"]],2],
+   ["b) 6 h 10",[["il est six heures dix"],["il est six heures dix"]],2],
+   ["c) 3 h 15",[["il est trois heures et quart"],["il est trois heures quinze"]],2],
+   ["d) 9 h 40",[["il est dix heures moins vingt"],["il est neuf heures quarante"]],2],
+   ["e) 8 h 30",[["il est huit heures et demie"],["il est huit heures trente"]],2],
+   ["f) 4 h 25",[["il est quatre heures vingt-cinq"],["il est quatre heures vingt-cinq"]],2],
+   ["g) 1 h 35",[["il est deux heures moins vingt-cinq"],["il est une heure trente-cinq"]],2],
+   ["h) 2 h 50",[["il est trois heures moins dix"],["il est deux heures cinquante"]],2],
+   ["i) 9 h 05",[["il est neuf heures cinq"],["il est neuf heures cinq"]],2]
+  ]},
+  {title:"Ejercicio 4. Traduce al francés.",type:"manual",items:[
+   ["a) Aquí está su mesa y allí está el menú, en la pared.","Voici votre table et voilà le menu au mur."],
+   ["b) ¿Qué va a elegir usted? — Déjeme pensar.","Qu'est-ce que vous allez choisir ? — Laissez-moi réfléchir."],
+   ["c) No tenemos tiempo de comer juntos. Tengo una reunión. (dos posibilidades)","Nous n'avons pas le temps de déjeuner ensemble. / On n'a pas le temps de déjeuner ensemble. J'ai rendez-vous."],
+   ["d) ¿Conocen ellos un buen lugar en el barrio?","Est-ce qu'ils connaissent un bon endroit dans le quartier ?"],
+   ["e) Vamos enseguida. — No, volvamos pasado mañana.","Allons-y tout de suite. — Non, revenons après-demain."]
+  ]}
+ ]},
+{
+ title:"Lección 7 · Un rendez-vous",
+ exercises:[
+  {title:"Ejercicio 1. Conjuga devoir.",type:"auto",items:[
+   ["a) Nous (devoir) ___ partir.",["devons"],1],
+   ["b) Je (devoir) ___ finir ce dossier.",["dois"],1],
+   ["c) Tu (devoir) ___ attendre.",["dois"],1],
+   ["d) Vous (devoir) ___ appuyer sur le bouton.",["devez"],1],
+   ["e) Ils (devoir) ___ parler avec un collègue.",["doivent"],1]
+  ]},
+  {title:"Ejercicio 2. Devoir en negativa o interrogativa.",type:"auto",items:[
+   ["a) Tu (negativa) ___ arriver en avance.",["ne dois pas"],1],
+   ["b) Je (interrogativa) ___ allumer la machine ?",["est-ce que je dois"],1],
+   ["c) Vous (negativa) ___ manger trop de viande.",["ne devez pas"],1],
+   ["d) Tu (interrogativa) ___ acheter les billets ?",["est-ce que tu dois"],1]
+  ]},
+  {title:"Ejercicio 3. Preposiciones.",type:"auto",items:[
+   ["a) La machine est (bajo) ___ la table.",["sous"],1],
+   ["b) Attendez-nous (enfrente de) ___ la galerie.",["devant"],1],
+   ["c) La salle d’attente est (detrás) ___ l’ascenseur.",["derrière"],1],
+   ["d) Est-ce que je dois (marcher) ___ (hasta) ___ carrefour ?",["marcher|jusqu'au","marcher|jusqu’au"],2],
+   ["e) Je l’attends (durante) ___ une heure et demie.",["pendant"],1],
+   ["f) Marie travaille comme informaticienne (desde hace) ___ quinze ans.",["depuis"],1]
+  ]},
+  {title:"Ejercicio 4. Traduce al francés.",type:"manual",items:[
+   ["a) ¿Puede deletrear su nombre, por favor? R.O.M.A.I.N T.A.R.D.Y.","Pouvez-vous épeler votre nom, s'il vous plaît ? R.O.M.A.I.N T.A.R.D.Y."],
+   ["b) Encienda la luz antes de entrar en la cocina.","Allumez la lumière avant d'entrer dans la cuisine."],
+   ["c) Hay unas treinta personas delante del museo.","Il y a une trentaine de personnes devant le musée."],
+   ["d) Tenemos que irnos a las cinco a más tardar.","Nous devons partir à cinq heures au plus tard."],
+   ["e) El Sr. Desprats quiere conocerle. Es muy amable, pero tengo que irme.","M. Desprats veut vous rencontrer. Il est très gentil, mais je dois partir."]
+  ]}
+ ]}
+];
+
+const exam=document.getElementById("exam");
+const tabs=document.getElementById("tabs");
+let records=[];
+let totalPoints=0;
+
+function normalize(s){
+ return s.toLowerCase().trim()
+  .replace(/[’‘`]/g,"'")
+  .replace(/[?!.,;:]/g,"")
+  .replace(/\s+/g," ");
+}
+function field(id,placeholder="Tu respuesta"){
+ return `<input id="${id}" data-key="${id}" placeholder="${placeholder}">`;
+}
+
+lessons.forEach((lesson,li)=>{
+ const tab=document.createElement("button");
+ tab.type="button";tab.textContent=`L${li+1}`;tab.dataset.tab=li;
+ if(li===0)tab.classList.add("active");
+ tabs.appendChild(tab);
+
+ const sec=document.createElement("section");
+ sec.className="lesson";sec.dataset.lesson=li;
+ if(li!==0)sec.classList.add("hidden");
+ sec.innerHTML=`<div class="lesson-head"><h2>${lesson.title}</h2><span class="lesson-score" id="lessonScore${li}">—</span></div>`;
+
+ lesson.exercises.forEach((ex,ei)=>{
+  const exDiv=document.createElement("div");
+  exDiv.className="exercise";
+  exDiv.innerHTML=`<h3>${ex.title}</h3>${ex.type==="manual"?'<p class="exercise-note">Se mostrará una solución modelo al calificar.</p>':""}`;
+  ex.items.forEach((item,qi)=>{
+   const box=document.createElement("div");box.className="q";
+   const id=`l${li}e${ei}q${qi}`;
+   if(ex.type==="manual"){
+    box.innerHTML=`<label>${item[0]}</label><textarea data-key="${id}" placeholder="Escribe tu traducción…"></textarea><div class="model"><strong>Modelo:</strong> ${item[1]}</div>`;
+   }else if(ex.type==="pair" || ex.type==="time"){
+    box.innerHTML=`<label>${item[0]}</label><div class="row">${field(id+"a",ex.type==="pair"?"Est-ce que…":"Primera forma")}${field(id+"b",ex.type==="pair"?"Inversión…":"Segunda forma")}</div><div class="feedback"></div>`;
+    records.push({lesson:li,box,inputs:[box.querySelector("#"+id+"a"),box.querySelector("#"+id+"b")],answers:item[1],points:item[2],type:ex.type});
+    totalPoints+=item[2];
+   }else{
+    box.innerHTML=`<label>${item[0]}</label>${field(id)}<div class="feedback"></div>`;
+    records.push({lesson:li,box,inputs:[box.querySelector("#"+id)],answers:item[1],points:item[2],type:"auto"});
+    totalPoints+=item[2];
+   }
+   exDiv.appendChild(box);
+  });
+  sec.appendChild(exDiv);
+ });
+ exam.appendChild(sec);
+});
+
+tabs.addEventListener("click",e=>{
+ const btn=e.target.closest("button[data-tab]");if(!btn)return;
+ document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+ btn.classList.add("active");
+ document.querySelectorAll(".lesson").forEach(s=>s.classList.add("hidden"));
+ document.querySelector(`.lesson[data-lesson="${btn.dataset.tab}"]`).classList.remove("hidden");
+ window.scrollTo({top:document.querySelector(".sticky").offsetTop-5,behavior:"smooth"});
+});
+
+function save(){
+ const data={};
+ document.querySelectorAll("[data-key]").forEach(el=>data[el.dataset.key]=el.value);
+ localStorage.setItem("monFrancaisOriginalExam",JSON.stringify(data));
+ document.getElementById("saveState").textContent="Guardado ahora";
+ setTimeout(()=>document.getElementById("saveState").textContent="Respuestas guardadas",900);
+ updateProgress();
+}
+function load(){
+ try{
+  const data=JSON.parse(localStorage.getItem("monFrancaisOriginalExam")||"{}");
+  document.querySelectorAll("[data-key]").forEach(el=>{if(data[el.dataset.key]!==undefined)el.value=data[el.dataset.key]});
+ }catch(e){}
+ updateProgress();
+}
+function updateProgress(){
+ const all=[...document.querySelectorAll("[data-key]")];
+ const done=all.filter(x=>x.value.trim()).length;
+ document.getElementById("bar").style.width=(all.length?done/all.length*100:0)+"%";
+}
+document.addEventListener("input",e=>{if(e.target.matches("[data-key]"))save()});
+
+function grade(){
+ let earned=0,correct=0;
+ const lessonEarned=Array(7).fill(0),lessonTotal=Array(7).fill(0),lessonCorrect=Array(7).fill(0),lessonItems=Array(7).fill(0);
+ records.forEach(r=>{
+  r.box.classList.remove("correct","incorrect");
+  let ok=false;
+  if(r.type==="auto"){
+   const v=normalize(r.inputs[0].value);
+   ok=r.answers.some(a=>normalize(a)===v);
+  }else if(r.type==="pair"){
+   ok=normalize(r.inputs[0].value)===normalize(r.answers[0]) &&
+      normalize(r.inputs[1].value)===normalize(r.answers[1]);
+  }else{
+   const a=normalize(r.inputs[0].value),b=normalize(r.inputs[1].value);
+   const g1=r.answers[0].map(normalize),g2=r.answers[1].map(normalize);
+   ok=(g1.includes(a)&&g2.includes(b))||(g2.includes(a)&&g1.includes(b));
+  }
+  lessonTotal[r.lesson]+=r.points;lessonItems[r.lesson]++;
+  if(ok){
+   earned+=r.points;correct++;lessonEarned[r.lesson]+=r.points;lessonCorrect[r.lesson]++;
+   r.box.classList.add("correct");
+  }else r.box.classList.add("incorrect");
+  const fb=r.box.querySelector(".feedback");
+  if(ok) fb.textContent="✓ Correcto";
+  else if(r.type==="auto") fb.textContent="Respuesta esperada: "+r.answers[0];
+  else if(r.type==="pair") fb.textContent="Respuestas: "+r.answers.join(" / ");
+  else fb.textContent="Ejemplos: "+r.answers[0][0]+" / "+r.answers[1][0];
+ });
+ document.querySelectorAll(".q").forEach(q=>{if(q.querySelector(".model"))q.classList.add("show-model")});
+ const pct=Math.round(earned/totalPoints*100);
+ document.getElementById("totalScore").textContent=pct+"%";
+ document.getElementById("pointsMetric").textContent=`${Math.round(earned*100)/100} / ${totalPoints}`;
+ document.getElementById("correctMetric").textContent=`${correct} / ${records.length}`;
+ document.getElementById("resultMessage").textContent=
+  pct>=90?"Excelente resultado. Tu dominio de las respuestas cerradas es muy sólido.":
+  pct>=75?"Muy buen trabajo. Revisa los reactivos marcados para reforzar detalles.":
+  pct>=60?"Hay una buena base, pero conviene repasar varias lecciones.":
+  "Conviene volver a practicar las lecciones con menor puntuación.";
+ const breakdown=document.getElementById("breakdown");breakdown.innerHTML="";
+ let bestIndex=0,bestPct=-1;
+ lessons.forEach((l,i)=>{
+  const lp=lessonTotal[i]?Math.round(lessonEarned[i]/lessonTotal[i]*100):0;
+  if(lp>bestPct){bestPct=lp;bestIndex=i}
+  document.getElementById("lessonScore"+i).textContent=`${Math.round(lessonEarned[i]*100)/100} / ${lessonTotal[i]} · ${lp}%`;
+  const row=document.createElement("div");row.className="break-row";
+  row.innerHTML=`<span>${l.title}</span><strong>${lp}%</strong>`;
+  breakdown.appendChild(row);
+ });
+ document.getElementById("bestLesson").textContent=`Lección ${bestIndex+1}`;
+ document.getElementById("results").classList.add("show");
+ const stats={
+  completedExams:1,
+  bestScore:pct,
+  lastActivity:new Date().toLocaleDateString("es-MX",{day:"2-digit",month:"short"}),
+  practicedLessons:[1,2,3,4,5,6,7]
+ };
+ try{
+  const old=JSON.parse(localStorage.getItem("monFrancaisStats")||"{}");
+  stats.completedExams=Math.max(1,old.completedExams||0);
+  stats.bestScore=Math.max(pct,old.bestScore||0);
+  stats.practicedLessons=[...new Set([...(old.practicedLessons||[]),1,2,3,4,5,6,7])];
+ }catch(e){}
+ localStorage.setItem("monFrancaisStats",JSON.stringify(stats));
+ document.getElementById("results").scrollIntoView({behavior:"smooth",block:"start"});
+ save();
+}
+document.getElementById("grade").onclick=grade;
+document.getElementById("reset").onclick=()=>{
+ if(!confirm("¿Borrar todas las respuestas de este examen?"))return;
+ localStorage.removeItem("monFrancaisOriginalExam");
+ document.querySelectorAll("[data-key]").forEach(x=>x.value="");
+ document.querySelectorAll(".correct,.incorrect,.show-model").forEach(x=>x.classList.remove("correct","incorrect","show-model"));
+ document.querySelectorAll("[id^='lessonScore']").forEach(x=>x.textContent="—");
+ document.getElementById("results").classList.remove("show");
+ updateProgress();window.scrollTo({top:0,behavior:"smooth"});
+};
+load();
+</script>
+</body>
+</html>
